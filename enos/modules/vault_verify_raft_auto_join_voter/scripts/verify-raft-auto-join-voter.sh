@@ -5,7 +5,7 @@
 
 set -e
 
-binpath=${vault_install_dir}/vault
+binpath=${VAULT_INSTALL_DIR}/vault
 
 fail() {
   echo "$1" 2>&1
@@ -33,17 +33,17 @@ retry() {
 }
 
 check_voter_status() {
-  voter_status=$($binpath operator raft list-peers -format json | jq -Mr --argjson expected "true" '.data.config.servers[] | select(.address=="${vault_cluster_addr}") | .voter == $expected')
+  voter_status=$($binpath operator raft list-peers -format json | jq -Mr --argjson expected "true" --arg ADDR "$VAULT_CLUSTER_ADDR" '.data.config.servers[] | select(.address==$ADDR) | .voter == $expected')
 
   if [[ "$voter_status" != 'true' ]]; then
-    fail "expected ${vault_cluster_addr} to be raft voter, got raft status for node: $($binpath operator raft list-peers -format json | jq '.data.config.servers[] | select(.address==${vault_cluster_addr})')"
+    fail "expected $VAULT_CLUSTER_ADDR to be raft voter, got raft status for node: $($binpath operator raft list-peers -format json | jq -Mr --arg ADDR "$VAULT_CLUSTER_ADDR" '.data.config.servers[] | select(.address==$ADDR)')"
   fi
 }
 
 test -x "$binpath" || fail "unable to locate vault binary at $binpath"
 
 export VAULT_ADDR='http://127.0.0.1:8200'
-export VAULT_TOKEN='${vault_token}'
+[[ -z "$VAULT_TOKEN" ]] && fail "VAULT_TOKEN env variable has not been set"
 
 # Retry a few times because it can take some time for things to settle after
 # all the nodes are unsealed

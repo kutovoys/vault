@@ -5,7 +5,7 @@
 
 set -e
 
-binpath=${vault_install_dir}/vault
+binpath=${VAULT_INSTALL_DIR}/vault
 
 fail() {
   echo "$1" 1>&2
@@ -15,14 +15,14 @@ fail() {
 test -x "$binpath" || fail "unable to locate vault binary at $binpath"
 
 export VAULT_ADDR='http://127.0.0.1:8200'
-export VAULT_TOKEN='${vault_token}'
+[[ -z "$VAULT_TOKEN" ]] && fail "VAULT_TOKEN env variable has not been set"
 
 # If approle was already enabled, disable it as we're about to re-enable it (the || true is so we don't fail if it doesn't already exist)
 $binpath auth disable approle || true
 
-approle_create_status=$($binpath auth enable approle)
+$binpath auth enable approle
 
-approle_status=$($binpath write auth/approle/role/proxy-role secret_id_ttl=700h token_num_uses=1000 token_ttl=600h token_max_ttl=700h secret_id_num_uses=1000)
+$binpath write auth/approle/role/proxy-role secret_id_ttl=700h token_num_uses=1000 token_ttl=600h token_max_ttl=700h secret_id_num_uses=1000
 
 ROLEID=$($binpath read --format=json auth/approle/role/proxy-role/role-id   | jq -r '.data.role_id')
 
@@ -36,14 +36,14 @@ if [[ "$SECRETID" == '' ]]; then
   fail "expected SECRETID to be nonempty, but it is empty"
 fi
 
-echo $ROLEID > /tmp/role-id
-echo $SECRETID > /tmp/secret-id
+echo "$ROLEID" > /tmp/role-id
+echo "$SECRETID" > /tmp/secret-id
 
 # Write the Vault Proxy's configuration to /tmp/vault-proxy.hcl
 #   The Proxy references the fixed Vault server address of http://127.0.0.1:8200
 #   The Proxy itself listens at the address http://127.0.0.1:8100
 cat > /tmp/vault-proxy.hcl <<- EOM
-pid_file = "${vault_proxy_pidfile}"
+pid_file = "${VAULT_PROXY_PIDFILE}"
 
 vault {
   address = "http://127.0.0.1:8200"
@@ -59,7 +59,7 @@ api_proxy {
 }
 
 listener "tcp" {
-    address = "${vault_proxy_address}"
+    address = "${VAULT_PROXY_ADDRESS}"
     tls_disable = true
 }
 
@@ -81,7 +81,7 @@ auto_auth {
 EOM
 
 # If Proxy is still running from a previous run, kill it
-pkill -F "${vault_proxy_pidfile}" || true
+pkill -F "${VAULT_PROXY_PIDFILE}" || true
 
 # Run proxy in the background
 $binpath proxy -config=/tmp/vault-proxy.hcl > /tmp/proxy-logs.txt 2>&1 &

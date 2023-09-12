@@ -5,9 +5,7 @@
 
 set -ex -o pipefail
 
-packages="${packages}"
-
-if [ "$packages" == "" ]
+if [ "$PACKAGES" == "" ]
 then
   echo "No dependencies to install."
   exit 0
@@ -25,14 +23,14 @@ function retry {
     if [ "$count" -lt "$retries" ]; then
       sleep "$wait"
     else
-      return "$exit"
+      exit "$exit"
     fi
   done
 
   return 0
 }
 
-echo "Installing Dependencies: $packages"
+echo "Installing Dependencies: $PACKAGES"
 if [ -f /etc/debian_version ]; then
   # Do our best to make sure that we don't race with cloud-init. Wait a reasonable time until we
   # see ec2 in the sources list. Very rarely cloud-init will take longer than we wait. In that case
@@ -41,8 +39,10 @@ if [ -f /etc/debian_version ]; then
 
   cd /tmp
   retry 5 sudo apt update
-  retry 5 sudo apt install -y $${packages[@]}
+  # shellcheck disable=2068
+  retry 5 sudo apt install -y ${PACKAGES[@]}
 else
   cd /tmp
-  retry 7 sudo yum -y install $${packages[@]}
+  # shellcheck disable=2068
+  retry 7 sudo yum -y install ${PACKAGES[@]}
 fi

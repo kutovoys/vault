@@ -4,8 +4,7 @@
 
 set -e
 
-# shellcheck disable=SC2154
-binpath=${vault_install_dir}/vault
+binpath=${VAULT_INSTALL_DIR}/vault
 
 fail() {
   echo "$1" 1>&2
@@ -14,12 +13,12 @@ fail() {
 
 test -x "$binpath" || fail "unable to locate vault binary at $binpath"
 
-export VAULT_ADDR='http://127.0.0.1:8200'
+export VAULT_ADDR=http://localhost:8200
 
 count=0
 retries=4
 while :; do
-    health_status=$(curl http://127.0.0.1:8200/v1/sys/health |jq '.')
+    health_status=$(curl -s "${VAULT_CLUSTER_ADDR}/v1/sys/health" |jq '.')
     unseal_status=$($binpath status -format json | jq -Mr --argjson expected "false" '.sealed == $expected')
     if [[ "$unseal_status" == 'true' ]]; then
       echo "$health_status"
@@ -31,7 +30,6 @@ while :; do
     if [ "$count" -lt "$retries" ]; then
       sleep "$wait"
     else
-      # shellcheck disable=SC2154
-      fail "expected ${vault_cluster_addr} to be unsealed, got unseal status: $unseal_status"
+      fail "expected ${VAULT_CLUSTER_ADDR} to be unsealed, got unseal status: $unseal_status"
     fi
 done

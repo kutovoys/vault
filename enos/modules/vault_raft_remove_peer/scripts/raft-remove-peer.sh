@@ -5,14 +5,15 @@
 
 set -e
 
-binpath=${vault_install_dir}/vault
-
-node_addr=${remove_vault_cluster_addr}
+binpath=${VAULT_INSTALL_DIR}/vault
+node_addr=${REMOVE_VAULT_CLUSTER_ADDR}
 
 fail() {
   echo "$1" 2>&1
   return 1
 }
+
+[[ -z "$VAULT_TOKEN" ]] && fail "VAULT_TOKEN env variable has not been set"
 
 retry() {
   local retries=$1
@@ -35,8 +36,7 @@ retry() {
 }
 
 remove_peer() {
-  node_id=$($binpath operator raft list-peers -format json | jq -Mr --argjson expected "false" '.data.config.servers[] | select(.address=='\""$node_addr"\"') | select(.voter==$expected) | .node_id')
-  if [ "$?" != "0" ];then
+  if ! node_id=$("$binpath" operator raft list-peers -format json | jq -Mr --argjson expected "false" '.data.config.servers[] | select(.address=='\""$node_addr"\"') | select(.voter==$expected) | .node_id'); then
     fail "failed to get node id of a non-voter node"
   fi
 

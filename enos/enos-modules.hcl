@@ -177,7 +177,6 @@ module "vault_verify_replication" {
 module "vault_verify_ui" {
   source = "./modules/vault_verify_ui"
 
-  vault_install_dir    = var.vault_install_dir
   vault_instance_count = var.vault_instance_count
 }
 

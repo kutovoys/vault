@@ -4,12 +4,12 @@
 scenario "smoke" {
   matrix {
     arch            = ["amd64", "arm64"]
-    backend         = ["consul", "raft"]
     artifact_source = ["local", "crt", "artifactory"]
     artifact_type   = ["bundle", "package"]
-    consul_version  = ["1.14.2", "1.13.4", "1.12.7"]
+    backend         = ["consul", "raft"]
+    consul_version  = ["1.12.9", "1.13.9", "1.14.9", "1.15.5", "1.16.1"]
     distro          = ["ubuntu", "rhel"]
-    edition         = ["oss", "ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    edition         = ["ce", "ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
     seal            = ["awskms", "shamir"]
 
     # Our local builder always creates bundles
@@ -84,7 +84,7 @@ scenario "smoke" {
   // This step reads the contents of the backend license if we're using a Consul backend and
   // the edition is "ent".
   step "read_backend_license" {
-    skip_step = matrix.backend == "raft" || var.backend_edition == "oss"
+    skip_step = matrix.backend == "raft" || var.backend_edition == "ce"
     module    = module.read_license
 
     variables {
@@ -93,7 +93,7 @@ scenario "smoke" {
   }
 
   step "read_vault_license" {
-    skip_step = matrix.edition == "oss"
+    skip_step = matrix.edition == "ce"
     module    = module.read_license
 
     variables {
@@ -182,7 +182,7 @@ scenario "smoke" {
       } : null
       enable_audit_devices = var.vault_enable_audit_devices
       install_dir          = local.vault_install_dir
-      license              = matrix.edition != "oss" ? step.read_vault_license.license : null
+      license              = matrix.edition != "ce" ? step.read_vault_license.license : null
       local_artifact_path  = local.artifact_path
       manage_service       = local.manage_service
       packages             = concat(global.packages, global.distro_packages[matrix.distro])
@@ -317,8 +317,7 @@ scenario "smoke" {
     }
 
     variables {
-      vault_instances   = step.create_vault_cluster_targets.hosts
-      vault_install_dir = local.vault_install_dir
+      vault_instances = step.create_vault_cluster_targets.hosts
     }
   }
 

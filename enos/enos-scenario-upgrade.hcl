@@ -4,12 +4,15 @@
 scenario "upgrade" {
   matrix {
     arch            = ["amd64", "arm64"]
-    backend         = ["consul", "raft"]
     artifact_source = ["local", "crt", "artifactory"]
     artifact_type   = ["bundle", "package"]
-    consul_version  = ["1.14.2", "1.13.4", "1.12.7"]
+    backend         = ["consul", "raft"]
+    consul_version  = ["1.14.9", "1.15.5", "1.16.1"]
     distro          = ["ubuntu", "rhel"]
-    edition         = ["oss", "ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    edition         = ["ce", "ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    // NOTE: when backporting the initial version make sure we don't include initial versions that
+    // are a higher minor version that our release candidate.
+    initial_version = ["1.8.12", "1.9.10", "1.10.11", "1.11.12", "1.12.11", "1.13.6", "1.14.2"]
     seal            = ["awskms", "shamir"]
 
     # Our local builder always creates bundles
@@ -22,6 +25,12 @@ scenario "upgrade" {
     exclude {
       arch    = ["arm64"]
       edition = ["ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    }
+
+    # FIPS 140-2 editions began at 1.10
+    exclude {
+      edition         = ["ent.fips1402", "ent.hsm.fips1402"]
+      initial_version = ["1.8.12", "1.9.10"]
     }
   }
 
@@ -85,7 +94,7 @@ scenario "upgrade" {
   // This step reads the contents of the backend license if we're using a Consul backend and
   // the edition is "ent".
   step "read_backend_license" {
-    skip_step = matrix.backend == "raft" || var.backend_edition == "oss"
+    skip_step = matrix.backend == "raft" || var.backend_edition == "ce"
     module    = module.read_license
 
     variables {
@@ -94,7 +103,7 @@ scenario "upgrade" {
   }
 
   step "read_vault_license" {
-    skip_step = matrix.edition == "oss"
+    skip_step = matrix.edition == "ce"
     module    = module.read_license
 
     variables {
@@ -182,12 +191,15 @@ scenario "upgrade" {
       } : null
       enable_audit_devices = var.vault_enable_audit_devices
       install_dir          = local.vault_install_dir
-      license              = matrix.edition != "oss" ? step.read_vault_license.license : null
+      license              = matrix.edition != "ce" ? step.read_vault_license.license : null
       packages             = concat(global.packages, global.distro_packages[matrix.distro])
-      release              = var.vault_upgrade_initial_release
-      storage_backend      = matrix.backend
-      target_hosts         = step.create_vault_cluster_targets.hosts
-      unseal_method        = matrix.seal
+      release = {
+        edition = matrix.edition
+        version = matrix.initial_version
+      }
+      storage_backend = matrix.backend
+      target_hosts    = step.create_vault_cluster_targets.hosts
+      unseal_method   = matrix.seal
     }
   }
 
@@ -341,6 +353,40 @@ scenario "upgrade" {
       vault_install_dir = local.vault_install_dir
       vault_instances   = step.create_vault_cluster_targets.hosts
       vault_root_token  = step.create_vault_cluster.root_token
+    }
+  }
+
+  step "verify_replication" {
+    module = module.vault_verify_replication
+    depends_on = [
+      step.create_vault_cluster,
+      step.upgrade_vault
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_edition     = matrix.edition
+      vault_install_dir = local.vault_install_dir
+      vault_instances   = step.create_vault_cluster_targets.hosts
+    }
+  }
+
+  step "verify_ui" {
+    module = module.vault_verify_ui
+    depends_on = [
+      step.create_vault_cluster,
+      step.upgrade_vault
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_instances = step.create_vault_cluster_targets.hosts
     }
   }
 

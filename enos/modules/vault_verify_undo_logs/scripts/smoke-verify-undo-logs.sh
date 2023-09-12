@@ -4,9 +4,11 @@
 
 
 function fail() {
-	echo "$1" 1>&2
-	exit 1
+  echo "$1" 1>&2
+  exit 1
 }
+
+[[ -z "$VAULT_TOKEN" ]] && fail "VAULT_TOKEN env variable has not been set"
 
 count=0
 retries=20

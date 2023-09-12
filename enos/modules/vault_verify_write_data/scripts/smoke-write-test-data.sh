@@ -25,8 +25,8 @@ function retry {
 }
 
 function fail {
-	echo "$1" 1>&2
-	exit 1
+  echo "$1" 1>&2
+  exit 1
 }
 
 binpath=${VAULT_INSTALL_DIR}/vault
@@ -35,4 +35,4 @@ testvalue=${TEST_VALUE}
 
 test -x "$binpath" || fail "unable to locate vault binary at $binpath"
 
-retry 5 $binpath kv put secret/test $testkey=$testvalue
+retry 5 "$binpath" kv put secret/test "$testkey=$testvalue"

@@ -9,7 +9,7 @@ scenario "replication" {
     arch              = ["amd64", "arm64"]
     artifact_source   = ["local", "crt", "artifactory"]
     artifact_type     = ["bundle", "package"]
-    consul_version    = ["1.14.2", "1.13.4", "1.12.7"]
+    consul_version    = ["1.12.9", "1.13.9", "1.14.9", "1.15.5", "1.16.1"]
     distro            = ["ubuntu", "rhel"]
     edition           = ["ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
     primary_backend   = ["raft", "consul"]
@@ -48,6 +48,11 @@ scenario "replication" {
     vault_install_dir = matrix.artifact_type == "bundle" ? var.vault_install_dir : global.vault_install_dir_packages[matrix.distro]
   }
 
+  step "get_local_metadata" {
+    skip_step = matrix.artifact_source != "local"
+    module    = module.get_local_metadata
+  }
+
   step "build_vault" {
     module = "build_${matrix.artifact_source}"
 
@@ -84,7 +89,7 @@ scenario "replication" {
   // This step reads the contents of the backend license if we're using a Consul backend and
   // the edition is "ent".
   step "read_backend_license" {
-    skip_step = (matrix.primary_backend == "raft" && matrix.secondary_backend == "raft") || var.backend_edition == "oss"
+    skip_step = (matrix.primary_backend == "raft" && matrix.secondary_backend == "raft") || var.backend_edition == "ce"
     module    = module.read_license
 
     variables {
@@ -241,7 +246,7 @@ scenario "replication" {
       } : null
       enable_audit_devices = var.vault_enable_audit_devices
       install_dir          = local.vault_install_dir
-      license              = matrix.edition != "oss" ? step.read_vault_license.license : null
+      license              = matrix.edition != "ce" ? step.read_vault_license.license : null
       local_artifact_path  = local.artifact_path
       manage_service       = local.manage_service
       packages             = concat(global.packages, global.distro_packages[matrix.distro])
@@ -298,7 +303,7 @@ scenario "replication" {
       } : null
       enable_audit_devices = var.vault_enable_audit_devices
       install_dir          = local.vault_install_dir
-      license              = matrix.edition != "oss" ? step.read_vault_license.license : null
+      license              = matrix.edition != "ce" ? step.read_vault_license.license : null
       local_artifact_path  = local.artifact_path
       manage_service       = local.manage_service
       packages             = concat(global.packages, global.distro_packages[matrix.distro])
@@ -337,6 +342,42 @@ scenario "replication" {
     variables {
       vault_instances   = step.create_secondary_cluster_targets.hosts
       vault_install_dir = local.vault_install_dir
+    }
+  }
+
+  step "verify_vault_version" {
+    module = module.vault_verify_version
+    depends_on = [
+      step.create_primary_cluster
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_instances       = step.create_primary_cluster_targets.hosts
+      vault_edition         = matrix.edition
+      vault_install_dir     = local.vault_install_dir
+      vault_product_version = matrix.artifact_source == "local" ? step.get_local_metadata.version : var.vault_product_version
+      vault_revision        = matrix.artifact_source == "local" ? step.get_local_metadata.revision : var.vault_revision
+      vault_build_date      = matrix.artifact_source == "local" ? step.get_local_metadata.build_date : var.vault_build_date
+      vault_root_token      = step.create_primary_cluster.root_token
+    }
+  }
+
+  step "verify_ui" {
+    module = module.vault_verify_ui
+    depends_on = [
+      step.create_primary_cluster
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_instances = step.create_primary_cluster_targets.hosts
     }
   }
 
@@ -542,7 +583,7 @@ scenario "replication" {
       force_unseal         = matrix.primary_seal == "shamir"
       initialize_cluster   = false
       install_dir          = local.vault_install_dir
-      license              = matrix.edition != "oss" ? step.read_vault_license.license : null
+      license              = matrix.edition != "ce" ? step.read_vault_license.license : null
       local_artifact_path  = local.artifact_path
       manage_service       = local.manage_service
       packages             = concat(global.packages, global.distro_packages[matrix.distro])
@@ -555,7 +596,7 @@ scenario "replication" {
     }
   }
 
-  step "verify_addtional_primary_nodes_are_unsealed" {
+  step "verify_additional_primary_nodes_are_unsealed" {
     module     = module.vault_verify_unsealed
     depends_on = [step.add_additional_nodes_to_primary_cluster]
 
@@ -575,7 +616,7 @@ scenario "replication" {
     depends_on = [
       step.add_additional_nodes_to_primary_cluster,
       step.create_primary_cluster,
-      step.verify_addtional_primary_nodes_are_unsealed
+      step.verify_additional_primary_nodes_are_unsealed
     ]
 
     providers = {
@@ -593,7 +634,7 @@ scenario "replication" {
     module = module.shutdown_node
     depends_on = [
       step.get_primary_cluster_ips,
-      step.verify_addtional_primary_nodes_are_unsealed
+      step.verify_additional_primary_nodes_are_unsealed
     ]
 
     providers = {

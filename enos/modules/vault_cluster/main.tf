@@ -109,9 +109,11 @@ resource "enos_remote_exec" "install_packages" {
     if length(var.packages) > 0
   }
 
-  content = templatefile("${path.module}/templates/install-packages.sh", {
-    packages = join(" ", var.packages)
-  })
+  environment = {
+    PACKAGES = join(" ", var.packages)
+  }
+
+  scripts = [abspath("${path.module}/scripts/install-packages.sh")]
 
   transport = {
     ssh = {
@@ -275,7 +277,6 @@ resource "enos_vault_unseal" "leader" {
 # user on all nodes, since logging will only happen on the leader.
 resource "enos_remote_exec" "create_audit_log_dir" {
   depends_on = [
-    enos_bundle_install.vault,
     enos_vault_unseal.leader,
   ]
   for_each = toset([
@@ -387,11 +388,13 @@ resource "enos_remote_exec" "vault_write_license" {
     enos_vault_unseal.maybe_force_unseal,
   ]
 
-  content = templatefile("${path.module}/templates/vault-write-license.sh", {
-    bin_path   = local.bin_path,
-    root_token = coalesce(var.root_token, try(enos_vault_init.leader[0].root_token, null), "none")
-    license    = coalesce(var.license, "none")
-  })
+  environment = {
+    BIN_PATH    = local.bin_path,
+    LICENSE     = coalesce(var.license, "none")
+    VAULT_TOKEN = coalesce(var.root_token, try(enos_vault_init.leader[0].root_token, null), "none")
+  }
+
+  scripts = [abspath("${path.module}/scripts/vault-write-license.sh")]
 
   transport = {
     ssh = {

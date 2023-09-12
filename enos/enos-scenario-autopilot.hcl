@@ -7,7 +7,10 @@ scenario "autopilot" {
     artifact_source = ["local", "crt", "artifactory"]
     artifact_type   = ["bundle", "package"]
     distro          = ["ubuntu", "rhel"]
-    edition         = ["ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    edition         = ["ce", "ent", "ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    // NOTE: when backporting the initial version make sure we don't include initial versions that
+    // are a higher minor version that our release candidate.
+    initial_version = ["1.8.12", "1.9.10", "1.10.11", "1.11.12", "1.12.11", "1.13.6", "1.14.2"]
     seal            = ["awskms", "shamir"]
 
     # Our local builder always creates bundles
@@ -20,6 +23,12 @@ scenario "autopilot" {
     exclude {
       arch    = ["arm64"]
       edition = ["ent.fips1402", "ent.hsm", "ent.hsm.fips1402"]
+    }
+
+    # FIPS 140-2 editions began at 1.10
+    exclude {
+      edition         = ["ent.fips1402", "ent.hsm.fips1402"]
+      initial_version = ["1.8.12", "1.9.10"]
     }
   }
 
@@ -114,12 +123,15 @@ scenario "autopilot" {
       awskms_unseal_key_arn = step.create_vpc.kms_key_arn
       cluster_name          = step.create_vault_cluster_targets.cluster_name
       install_dir           = local.vault_install_dir
-      license               = matrix.edition != "oss" ? step.read_license.license : null
+      license               = matrix.edition != "ce" ? step.read_license.license : null
       packages              = concat(global.packages, global.distro_packages[matrix.distro])
-      release               = var.vault_autopilot_initial_release
-      storage_backend       = "raft"
+      release = {
+        edition = matrix.edition
+        version = matrix.initial_version
+      }
+      storage_backend = "raft"
       storage_backend_addl_config = {
-        autopilot_upgrade_version = var.vault_autopilot_initial_release.version
+        autopilot_upgrade_version = matrix.initial_version
       }
       target_hosts         = step.create_vault_cluster_targets.hosts
       unseal_method        = matrix.seal
@@ -213,7 +225,7 @@ scenario "autopilot" {
       force_unseal                = matrix.seal == "shamir"
       initialize_cluster          = false
       install_dir                 = local.vault_install_dir
-      license                     = matrix.edition != "oss" ? step.read_license.license : null
+      license                     = matrix.edition != "ce" ? step.read_license.license : null
       local_artifact_path         = local.artifact_path
       manage_service              = local.manage_service
       packages                    = concat(global.packages, global.distro_packages[matrix.distro])
@@ -385,6 +397,68 @@ scenario "autopilot" {
       vault_install_dir               = local.vault_install_dir
       vault_instances                 = step.upgrade_vault_cluster_with_autopilot.target_hosts
       vault_root_token                = step.create_vault_cluster.root_token
+    }
+  }
+
+  step "verify_replication" {
+    module = module.vault_verify_replication
+    depends_on = [
+      step.create_vault_cluster_upgrade_targets,
+      step.upgrade_vault_cluster_with_autopilot,
+      step.verify_raft_auto_join_voter,
+      step.remove_old_nodes
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_edition     = matrix.edition
+      vault_install_dir = local.vault_install_dir
+      vault_instances   = step.upgrade_vault_cluster_with_autopilot.target_hosts
+    }
+  }
+
+  step "verify_vault_version" {
+    module = module.vault_verify_version
+    depends_on = [
+      step.create_vault_cluster_upgrade_targets,
+      step.upgrade_vault_cluster_with_autopilot,
+      step.verify_raft_auto_join_voter,
+      step.remove_old_nodes
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_instances       = step.upgrade_vault_cluster_with_autopilot.target_hosts
+      vault_edition         = matrix.edition
+      vault_install_dir     = local.vault_install_dir
+      vault_product_version = matrix.artifact_source == "local" ? step.get_local_metadata.version : var.vault_product_version
+      vault_revision        = matrix.artifact_source == "local" ? step.get_local_metadata.revision : var.vault_revision
+      vault_build_date      = matrix.artifact_source == "local" ? step.get_local_metadata.build_date : var.vault_build_date
+      vault_root_token      = step.create_vault_cluster.root_token
+    }
+  }
+
+  step "verify_ui" {
+    module = module.vault_verify_ui
+    depends_on = [
+      step.create_vault_cluster_upgrade_targets,
+      step.upgrade_vault_cluster_with_autopilot,
+      step.verify_raft_auto_join_voter,
+      step.remove_old_nodes
+    ]
+
+    providers = {
+      enos = local.enos_provider[matrix.distro]
+    }
+
+    variables {
+      vault_instances = step.upgrade_vault_cluster_with_autopilot.target_hosts
     }
   }
 

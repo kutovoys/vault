@@ -3,22 +3,21 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 
-token="${vault_token}"
-autopilot_version="${vault_autopilot_upgrade_version}"
-autopilot_status="${vault_autopilot_upgrade_status}"
+autopilot_version="${VAULT_AUTOPILOT_UPGRADE_VERSION}"
+autopilot_status="${VAULT_AUTOPILOT_UPGRADE_STATUS}"
 
 export VAULT_ADDR="http://localhost:8200"
-export VAULT_TOKEN="$token"
+[[ -z "$VAULT_TOKEN" ]] && fail "VAULT_TOKEN env variable has not been set"
 
 function fail() {
-	echo "$1" 1>&2
-	exit 1
+  echo "$1" 1>&2
+  exit 1
 }
 
 count=0
 retries=7
 while :; do
-    state=$(${vault_install_dir}/vault read -format=json sys/storage/raft/autopilot/state)
+    state=$("${VAULT_INSTALL_DIR}"/vault read -format=json sys/storage/raft/autopilot/state)
     status="$(jq -r '.data.upgrade_info.status' <<< "$state")"
     target_version="$(jq -r '.data.upgrade_info.target_version' <<< "$state")"
 

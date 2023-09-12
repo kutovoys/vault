@@ -24,7 +24,7 @@
 # aws_ssh_private_key_path = "./support/private_key.pem"
 
 # backend_edition is the backend (consul) release edition if applicable to the scenario.
-# backend_edition = "oss"
+# backend_edition = "ce"
 
 # backend_license_path is the license for the backend if applicable (Consul Enterprise)".
 # backend_license_path = "./support/consul.hclic"
@@ -108,7 +108,7 @@
 # vault_instance_count = 3
 
 # vault_license_path is the path to a valid Vault enterprise edition license.
-# This is only required for non-oss editions"
+# This is only required for non-ce editions"
 # vault_license_path = "./support/vault.hclic"
 
 # vault_local_build_tags override the build tags we pass to the Go compiler for builder:local variants.
@@ -130,7 +130,7 @@
 
 # vault_upgrade_initial_release is the Vault release to deploy before doing an in-place upgrade.
 # vault_upgrade_initial_release = {
-#     edition = "oss"
+#     edition = "ce"
 #     // Vault 1.10.5 has a known issue with retry_join.
 #     version = "1.10.4"
 #   }

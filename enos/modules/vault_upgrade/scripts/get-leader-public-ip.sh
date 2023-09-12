@@ -5,14 +5,15 @@
 
 set -e
 
-binpath=${vault_install_dir}/vault
+binpath=${VAULT_INSTALL_DIR}/vault
 export VAULT_ADDR="http://localhost:8200"
 
-instances='${vault_instances}'
+instances=${VAULT_INSTANCES}
 
 # Find the leader
 leader_address=$($binpath status -format json | jq '.leader_address | rtrimstr(":8200") | ltrimstr("http://")')
 
 # Get the public ip address of the leader
 leader_public=$(jq ".[] | select(.private_ip==$leader_address) | .public_ip" <<< "$instances")
+#shellcheck disable=SC2001
 echo "$leader_public" | sed 's/\"//g'

@@ -3,8 +3,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 
-license='${license}'
-if test $license = "none"; then
+if test "$LICENSE" = "none"; then
   exit 0
 fi
 
@@ -29,13 +28,13 @@ function retry {
 }
 
 export VAULT_ADDR=http://localhost:8200
-export VAULT_TOKEN='${root_token}'
+[[ -z "$VAULT_TOKEN" ]] && fail "VAULT_TOKEN env variable has not been set"
 
 # Temporary hack until we can make the unseal resource handle legacy license
 # setting. If we're running 1.8 and above then we shouldn't try to set a license.
-ver=$(${bin_path} version)
+ver=$(${BIN_PATH} version)
 if [[ "$(echo "$ver" |awk '{print $2}' |awk -F'.' '{print $2}')" -ge 8 ]]; then
   exit 0
 fi
 
-retry 5 ${bin_path} write /sys/license text="$license"
+retry 5 "${BIN_PATH}" write /sys/license text="$LICENSE"
