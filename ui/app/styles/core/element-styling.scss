@@ -80,7 +80,6 @@ object {
 
 html {
   background-color: $white;
-  font-size: 14px;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   min-width: 300px;
@@ -122,7 +121,8 @@ pre code {
 }
 
 body {
-  font-size: $size-6;
+  font-family: var(--token-typography-body-200-font-family);
+  font-size: var(--token-typography-body-200-font-size);
   line-height: 1.5;
 }
 
@@ -155,7 +155,7 @@ hr {
   border: none;
   display: block;
   height: 1px;
-  margin: 1rem 0;
+  margin: $size-6 0;
 }
 
 img {
