@@ -39,7 +39,7 @@
   position: fixed;
   right: $size-8;
   bottom: $size-8;
-  top: calc(#{4rem} + #{$size-8});
+  top: calc(($size-6 * 4) + $size-8);
   overflow: auto;
 
   p {

@@ -41,7 +41,7 @@
   left: 0;
   width: $size-1;
   height: $size-4;
-  border: 0.1rem solid transparent;
+  border: calc($size-6/10) solid transparent;
   border-radius: $size-9;
   background: $ui-gray-300;
   content: '';
@@ -81,7 +81,7 @@
       &::after {
         width: $size-8 * 0.8;
         height: $size-8 * 0.8;
-        transform: translateX(0.15rem);
+        transform: translateX($size-12);
         left: 0;
         top: calc($size-8 / 4);
       }
