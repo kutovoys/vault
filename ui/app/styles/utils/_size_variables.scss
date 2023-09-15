@@ -6,17 +6,17 @@
 $base-size: 16;
 
 /* General sizing in rem values used largely for text sizing.*/
-$size-1: calc(42 / $base-size) + 0rem;
-$size-2: calc(35 / $base-size) + 0rem;
-$size-3: calc(24 / $base-size) + 0rem;
-$size-4: calc(21 / $base-size) + 0rem;
-$size-5: calc(17.5 / $base-size) + 0rem;
-$size-6: calc(14 / $base-size) + 0rem;
-$size-7: calc(13 / $base-size) + 0rem;
-$size-8: calc(12 / $base-size) + 0rem;
-$size-9: calc(10.5 / $base-size) + 0rem;
-$size-10: calc(7 / $base-size) + 0rem;
-$size-11: calc(3.25 / $base-size) + 0rem;
+$size-1: calc(42 / $base-size) + 0rem; // 42px or 2.63rem
+$size-2: calc(35 / $base-size) + 0rem; // 35px or 2.19rem
+$size-3: calc(24 / $base-size) + 0rem; // 24px or 1.50rem
+$size-4: calc(21 / $base-size) + 0rem; // 21px or 1.31rem
+$size-5: calc(17.5 / $base-size) + 0rem; // 17.5px or 1.09rem
+$size-6: calc(14 / $base-size) + 0rem; // 14px or 0.88rem
+$size-7: calc(13 / $base-size) + 0rem; // 13px or 0.81rem
+$size-8: calc(12 / $base-size) + 0rem; // 12px or 0.75rem
+$size-9: calc(10.5 / $base-size) + 0rem; // 10.5px or 0.66rem
+$size-10: calc(7 / $base-size) + 0rem; // 7px or 0.44rem
+$size-11: calc(3.25 / $base-size) + 0rem; // 3.5px or 0.22rem
 
 /* Spacing vars in px */
 $spacing-xxs: 4px;
