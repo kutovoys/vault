@@ -41,7 +41,7 @@
 }
 
 .swagger-ember .swagger-ui .opblock .opblock-summary {
-  padding: 1rem;
+  padding: 0.875rem;
 }
 
 .swagger-ember .swagger-ui .opblock .opblock-summary-description {
@@ -75,22 +75,22 @@
 .swagger-ember .swagger-ui .opblock-tag-section .opblock-tag {
   color: #0a0a0a;
   font-weight: 600 !important;
-  font-size: 1rem !important;
+  font-size: 0.875rem !important;
   transition: box-shadow 150ms, margin 150ms, padding 150ms;
   will-change: box-shadow, margin, padding;
   background-color: white;
   border-radius: 0;
-  padding: 1.25rem;
+  padding: 1.093rem;
   margin: 0;
 }
 
 .swagger-ember .swagger-ui .opblock-tag:hover,
 .swagger-ember .swagger-ui .opblock-tag:focus,
 .swagger-ember .swagger-ui .opblock-tag:active {
-  margin-left: -0.75rem !important;
-  margin-right: -0.75rem !important;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  margin-left: -0.65rem !important;
+  margin-right: -0.65rem !important;
+  padding-left: 0.65rem;
+  padding-right: 0.65rem;
   position: relative;
   box-shadow: 0 2px 0 -1px #BAC1CC, 0 -2px 0 -1px #BAC1CC, 0 0 0 1px #BAC1CC, 0 8px 4px -4px rgba(10, 10, 10, 0.1), 0 6px 8px -2px rgba(10, 10, 10, 0.05);
 }

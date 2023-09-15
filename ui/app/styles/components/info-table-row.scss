@@ -21,7 +21,7 @@
     padding: 0 $size-6 0 0;
 
     .column {
-      padding: 0.5rem 0.75rem;
+      padding: $size-10 $size-9;
     }
   }
 
@@ -30,8 +30,8 @@
     padding: $spacing-m;
 
     &.info-table-row-edit {
-      padding-bottom: 0.3rem;
-      padding-top: 0.3rem;
+      padding-bottom: $size-11;
+      padding-top: $size-11;
     }
 
     textarea {

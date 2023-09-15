@@ -6,12 +6,12 @@
 .footer {
   background-color: transparent;
   border-top: $base-border;
-  padding: $size-3 1.5rem;
+  padding: $size-3 $size-4;
   margin-top: auto;
 
   span:not(:first-child) {
     display: inline-block;
-    padding: 0 0.5rem;
+    padding: 0 $size-10;
 
     @include until($mobile) {
       display: none;

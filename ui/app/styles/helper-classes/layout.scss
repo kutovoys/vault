@@ -32,8 +32,8 @@
 
 .is-in-bottom-right {
   position: absolute;
-  bottom: 1rem;
-  right: 1rem;
+  bottom: $size-6;
+  right: $size-6;
   z-index: 10;
 }
 

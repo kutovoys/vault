@@ -8,12 +8,12 @@
 .title:not(:last-child),
 .subtitle:not(:last-child) {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: $size-6;
 }
 
 .title {
   color: hsl(0, 0%, 21%);
-  font-size: 2rem;
+  font-size: calc($size-6 * 2);
   font-weight: $font-weight-bold;
   line-height: 1.125;
   word-break: break-word;

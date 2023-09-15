@@ -59,8 +59,8 @@
 
   a {
     text-decoration: none;
-    height: 1.5rem;
-    min-width: 1.5rem;
+    height: $size-4;
+    min-width: $size-4;
     border: none;
   }
   a.pagination-link {
@@ -108,10 +108,10 @@
   background: $white;
   border-color: $blue-500;
   color: $blue-500;
-  max-width: 8rem;
+  max-width: calc($size-6 * 8);
 
   @include until($mobile) {
-    max-width: 2rem;
+    max-width: calc($size-6 * 2);
     padding-left: 0;
     padding-right: 0;
   }

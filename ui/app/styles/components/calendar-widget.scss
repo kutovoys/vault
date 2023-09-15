@@ -90,7 +90,7 @@ $dark-gray: #535f73;
   display: grid;
   grid-template-columns: 110px 110px;
   grid-template-rows: repeat(2, 1fr);
-  grid-gap: 0.7rem;
+  grid-gap: $size-9;
   padding: 7px 28px 28px 28px;
 }
 

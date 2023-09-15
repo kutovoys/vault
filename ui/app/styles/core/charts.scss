@@ -22,7 +22,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 2em;
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: $size-6;
 }
 .single-month-section-title {
   grid-column-start: 1;

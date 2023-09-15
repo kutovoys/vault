@@ -71,7 +71,7 @@
 
 .confirm-action span .button {
   display: block;
-  margin: 0.25rem auto;
+  margin: $size-11 auto;
   width: 95%;
 }
 
@@ -110,7 +110,7 @@
   }
 
   .message-title {
-    font-size: 1rem;
+    font-size: $size-6;
   }
 
   .hs-icon {

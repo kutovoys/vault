@@ -17,9 +17,9 @@
 }
 .box-radio {
   box-sizing: border-box;
-  flex-basis: 7rem;
-  width: 7rem;
-  min-height: 7.5rem;
+  flex-basis: calc($size-6 * 7);
+  width: calc($size-6 * 7);
+  min-height: calc($size-2 * 3);
   padding: $size-10 $size-6 $size-10;
   flex-direction: column;
   justify-content: space-between;
@@ -49,9 +49,9 @@
     border-radius: 50%;
     cursor: pointer;
     display: block;
-    margin: 1rem auto 0;
-    height: 1rem;
-    width: 1rem;
+    margin: $size-6 auto 0;
+    height: $size-6;
+    width: $size-6;
     flex-shrink: 0;
     flex-grow: 0;
   }

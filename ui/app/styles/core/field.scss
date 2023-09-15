@@ -88,7 +88,7 @@ fieldset.form-fieldset {
 
   > .control:not(:last-child) {
     margin-bottom: 0;
-    margin-right: 0.75rem;
+    margin-right: $size-9;
   }
 
   > .control.is-expanded {
@@ -121,7 +121,7 @@ fieldset.form-fieldset {
     flex-basis: 0;
     flex-grow: 1;
     flex-shrink: 0;
-    margin-right: 1.5rem;
+    margin-right: $size-4;
     text-align: right;
 
     &.is-normal {
@@ -129,12 +129,12 @@ fieldset.form-fieldset {
     }
 
     &.is-medium {
-      font-size: 1.25rem;
+      font-size: $size-5;
       padding-top: 0.375em;
     }
 
     &.is-large {
-      font-size: 1.5rem;
+      font-size: $size-4;
       padding-top: 0.375em;
     }
   }

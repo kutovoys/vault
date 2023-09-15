@@ -31,7 +31,7 @@
 .toggle[type='checkbox'] + label {
   position: relative;
   display: inline-block;
-  padding-left: 3.5rem;
+  padding-left: calc($size-10 * 5);
   cursor: pointer;
 }
 .toggle[type='checkbox'] + label::before {
@@ -39,20 +39,20 @@
   display: block;
   top: 0;
   left: 0;
-  width: 3rem;
-  height: 1.5rem;
+  width: $size-1;
+  height: $size-4;
   border: 0.1rem solid transparent;
-  border-radius: 0.75rem;
+  border-radius: $size-9;
   background: $ui-gray-300;
   content: '';
 }
 .toggle[type='checkbox'] + label::after {
   display: block;
   position: absolute;
-  top: 0.25rem;
-  left: 0.25rem;
-  width: 1rem;
-  height: 1rem;
+  top: $size-11;
+  left: $size-11;
+  width: $size-6;
+  height: $size-6;
   transform: translate3d(0, 0, 0);
   border-radius: 50%;
   background: $white;
@@ -63,7 +63,7 @@
   background: $ui-gray-700;
 }
 .toggle[type='checkbox']:checked + label::after {
-  left: 1.625rem;
+  left: $size-4;
 }
 
 /* CUSTOM */
@@ -72,7 +72,7 @@
     + label {
       font-size: $size-7;
       padding-left: $size-8 * 2.5;
-      margin: 0 0.25rem;
+      margin: 0 $size-11;
       &::before {
         top: calc($size-8 / 5);
         height: $size-8;
@@ -93,8 +93,8 @@
   }
 
   &.is-large {
-    width: 4.5rem;
-    height: 2.25rem;
+    width: calc($size-10 * 9);
+    height: calc($size-9 * 3);
   }
 }
 .toggle[type='checkbox'].is-small + label::after {

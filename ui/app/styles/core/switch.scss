@@ -19,13 +19,13 @@
     font-size: $size-6;
     justify-content: flex-start;
     line-height: 1.5;
-    padding-left: 3.5rem;
+    padding-left: calc($size-10 * 5);
     position: relative;
 
     &::before {
       position: absolute;
       display: block;
-      top: calc(50% - 1.5rem * 0.5);
+      top: calc(50% - $size-4 * 0.5);
       left: 0;
       width: $size-1;
       height: $size-4;
@@ -43,14 +43,14 @@
       height: $size-6;
       left: $size-11;
       position: absolute;
-      top: calc(50% - 1rem * 0.5);
+      top: calc(50% - $size-6 * 0.5);
       transform: translate3d(0, 0, 0);
       transition: all 0.25s ease-out;
       width: $size-6;
     }
 
     &:checked::after {
-      left: 1.625rem;
+      left: $size-4;
     }
   }
 }

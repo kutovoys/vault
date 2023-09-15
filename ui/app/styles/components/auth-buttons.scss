@@ -13,14 +13,14 @@
 .auth-button-type-google {
   position: relative;
   top: -10px;
-  left: -1.05rem;
+  left: -$size-6;
 }
 
 .auth-button-type-auth0,
 .auth-button-type-gitlab {
   position: relative;
   top: -6px;
-  left: -0.75rem;
+  left: -$size-9;
 }
 [class*='auth-button-type'] .text {
   padding-left: $spacing-m;

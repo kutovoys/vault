@@ -50,7 +50,7 @@ $console-close-height: 35px;
     background: none;
     color: inherit;
     font-size: 14px;
-    min-height: 2rem;
+    min-height: calc($size-6 * 2);
     padding: 0;
 
     &:not(.console-ui-command):not(.CodeMirror-line) {
@@ -103,7 +103,7 @@ $console-close-height: 35px;
 }
 
 .console-ui-alert {
-  margin-left: calc(#{$size-4} - 0.33rem);
+  margin-left: calc(#{$size-4} - 0.3$size-1);
   position: relative;
 
   svg {
@@ -137,10 +137,10 @@ $console-close-height: 35px;
   &::after {
     height: auto;
     width: auto;
-    right: 0.25rem;
-    left: 0.25rem;
-    top: 0.25rem;
-    bottom: 0.25rem;
+    right: $size-11;
+    left: $size-11;
+    top: $size-11;
+    bottom: $size-11;
   }
 }
 

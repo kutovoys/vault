@@ -14,7 +14,7 @@
     }
 
     .card-title {
-      margin-bottom: 2rem;
+      margin-bottom: calc($size-6 * 2);
     }
   }
 }

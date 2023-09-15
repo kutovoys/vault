@@ -134,7 +134,7 @@
 }
 
 .grid-gap-2 {
-  grid-gap: 2rem;
+  grid-gap: calc($size-6 * 2);
 }
 
 .is-grid-3-columns {

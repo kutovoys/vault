@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   grid-template-rows: 1fr;
-  grid-gap: 2rem;
+  grid-gap: calc($size-6 * 2);
 
   &.one-card {
     max-width: 33%;
@@ -21,7 +21,7 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: repeat(2, 1fr);
-  grid-gap: 2rem;
+  grid-gap: calc($size-6 * 2);
 
   @include until($mobile) {
     grid-template-columns: 2fr;

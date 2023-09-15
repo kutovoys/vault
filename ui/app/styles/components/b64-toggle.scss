@@ -4,7 +4,7 @@
  */
 
 .b64-toggle {
-  padding: 0.75rem;
+  padding: $size-9;
   font-size: $size-9;
 }
 .b64-toggle.is-input {
@@ -13,6 +13,6 @@
 .b64-toggle.is-textarea {
   @extend .is-compact;
   position: absolute;
-  bottom: 0.25rem;
-  right: 0.25rem;
+  bottom: $size-11;
+  right: $size-11;
 }

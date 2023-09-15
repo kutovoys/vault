@@ -17,7 +17,7 @@ select {
   cursor: pointer;
   display: block;
   font-size: 1em;
-  height: 2.5rem;
+  height: $size-2;
   max-width: 100%;
   outline: none;
   padding-bottom: calc(0.375em - 1px);
@@ -27,7 +27,7 @@ select {
   text-rendering: auto !important;
 
   @include until($desktop) {
-    font-size: 1rem;
+    font-size: $size-6;
   }
 
   &::placeholder {
@@ -60,7 +60,7 @@ select {
 
 .select {
   display: inline-block;
-  height: 2.5rem;
+  height: $size-2;
   max-width: 100%;
   position: relative;
   vertical-align: top;

@@ -14,9 +14,9 @@
   display: inline-block;
   font-size: $size-8;
   font-weight: $font-weight-semibold;
-  min-height: 2.25rem;
-  min-width: 6rem;
-  padding: 0.5625rem 0.9375rem;
+  min-height: calc($size-6 + $size-5);
+  min-width: calc($size-6 * 6);
+  padding: 0.49rem $size-7;
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -57,7 +57,7 @@
   // Button types: is-compact, is-danger, is-danger-outlined, is-flat, is-ghost, is-icon, is-loading, is-link, is-outline, is-primary, is-transparent.
 
   &.is-compact {
-    height: 2rem;
+    height: calc($size-6 * 2);
     padding: $size-11 $size-8;
   }
 
@@ -117,7 +117,7 @@
   }
 
   &.is-icon {
-    padding: 0.25rem $size-3;
+    padding: $size-11 $size-3;
   }
 
   &.is-loading {
@@ -146,7 +146,7 @@
     text-decoration: none;
     font-weight: $font-weight-semibold;
     box-shadow: none;
-    min-width: 4rem;
+    min-width: calc($size-6 * 4);
   }
 
   &.is-primary {

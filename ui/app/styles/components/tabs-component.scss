@@ -23,7 +23,7 @@
     align-items: center;
     display: flex;
     justify-content: flex-start;
-    min-height: 3rem;
+    min-height: $size-1;
 
     > a {
       &:focus {

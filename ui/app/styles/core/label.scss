@@ -16,7 +16,7 @@
   min-width: 100%;
 
   &:not(:last-child) {
-    margin-bottom: 0.25rem;
+    margin-bottom: $size-11;
   }
 
   &::before,
