@@ -25,8 +25,8 @@
 // position
 .top-right-absolute {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: $size-10;
+  right: $size-10;
   z-index: 10;
 }
 
