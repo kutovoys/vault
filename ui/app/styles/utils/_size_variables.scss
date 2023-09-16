@@ -3,20 +3,22 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-$base-size: 16;
+@function rem($value, $base: 16) {
+  @return calc($value / $base) + 0rem;
+}
 
 /* General sizing in rem values used largely for text sizing.*/
-$size-1: calc(42 / $base-size) + 0rem; // 42px or 2.63rem
-$size-2: calc(35 / $base-size) + 0rem; // 35px or 2.19rem
-$size-3: calc(24 / $base-size) + 0rem; // 24px or 1.50rem
-$size-4: calc(21 / $base-size) + 0rem; // 21px or 1.31rem
-$size-5: calc(17.5 / $base-size) + 0rem; // 17.5px or 1.09rem
-$size-6: calc(14 / $base-size) + 0rem; // 14px or 0.88rem
-$size-7: calc(13 / $base-size) + 0rem; // 13px or 0.81rem
-$size-8: calc(12 / $base-size) + 0rem; // 12px or 0.75rem
-$size-9: calc(10.5 / $base-size) + 0rem; // 10.5px or 0.66rem
-$size-10: calc(7 / $base-size) + 0rem; // 7px or 0.44rem
-$size-11: calc(3.25 / $base-size) + 0rem; // 3.5px or 0.22rem
+$size-1: rem(42); // 42px or 2.63rem
+$size-2: rem(36); // 35px or 2.19rem
+$size-3: rem(24); // 24px or 1.50rem
+$size-4: rem(21); // 21px or 1.31rem
+$size-5: rem(17.5); // 17.5px or 1.09rem
+$size-6: rem(14); // 14px or 0.88rem
+$size-7: rem(13); // 13px or 0.81rem
+$size-8: rem(12); // 12px or 0.75rem
+$size-9: rem(10.5); // 10.5px or 0.66rem
+$size-10: rem(7); // 7px or 0.44rem
+$size-11: rem(3.25); // 3.5px or 0.22rem
 $size-12: 0.15rem;
 
 /* Spacing vars in px */
